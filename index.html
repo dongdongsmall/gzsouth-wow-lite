@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>广州南站 · 城市动脉</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root{--bg:#f5f7fb;--ink:#131722;--muted:#5b657c;--brand:#0f7aff;--card:#ffffffcc;--line:#dce3f3;--radius:18px}
+    *{box-sizing:border-box} html,body{margin:0;background:radial-gradient(circle at 12% 10%,#ffffff,transparent 30%),radial-gradient(circle at 80% 0,#dff1ff,transparent 26%),var(--bg);color:var(--ink);font-family:Outfit,"PingFang SC",sans-serif}
+    .wrap{max-width:1240px;margin:0 auto;padding:20px 14px 80px}
+    header{padding:18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,#ffffffcc,#eef4ffcc);backdrop-filter: blur(10px);position:sticky;top:10px;z-index:10}
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border-radius:999px;background:#0f7aff14;color:#0f63cd;font-size:12px;font-weight:600}
+    h1{font-family:"Noto Serif SC",serif;font-size:clamp(28px,7vw,54px);line-height:1.08;margin:12px 0}
+    .sub{color:var(--muted);font-size:15px;max-width:780px}
+    .grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:18px}
+    nav{position:sticky;top:150px;max-height:calc(100vh - 170px);overflow:auto;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+    nav h3{margin:0 0 10px;font-size:13px;letter-spacing:.08em;color:#597193}
+    .lv1,.lv2{display:block;text-decoration:none;border-radius:10px;cursor:pointer}
+    .lv1{padding:10px;font-weight:700;color:#23314e;background:#edf3ff;margin:8px 0}
+    .lv2{padding:8px 10px;margin:4px 0 4px 10px;color:#4d5f80;font-size:14px}
+    .lv2:hover,.lv1:hover{background:#dfeafd}
+    main{padding:22px;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+    article h1{font-family:"Noto Serif SC",serif;font-size:36px;line-height:1.2;margin:.2em 0 .6em}
+    article h2{font-size:22px;margin:1.8em 0 .6em;border-left:4px solid var(--brand);padding-left:10px}
+    article h3{font-size:20px;margin:1.4em 0 .5em;color:#1e2c46}
+    article h4{font-size:17px;margin:1.2em 0 .4em;color:#36496d}
+    article p,article li{font-size:15px;line-height:1.85;color:#273246}
+    article pre{background:#0f172a;color:#dbeafe;padding:14px;border-radius:12px;overflow:auto}
+    footer{margin-top:16px;text-align:center;color:#5d6f91;font-size:14px}
+    .fab{position:fixed;right:14px;bottom:14px;border:none;padding:12px 16px;border-radius:999px;background:#0f7aff;color:white;font-weight:700;cursor:pointer;box-shadow:0 10px 25px #0f7aff55}
+    @media (max-width:900px){.grid{grid-template-columns:1fr} nav{position:relative;top:0;max-height:none} header{position:relative;top:0}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="badge">东东制作 · WOW Lite</div>
+      <h1>广州南站：<br>把城市速度变成城市质量</h1>
+      <p class="sub">一份兼具审美与专业深度的交互式报告。你可以通过左侧二级菜单快速定位内容：枢纽定位、客流结构、站城商业、风险与机会、未来图景。</p>
+    </header>
+
+    <section class="grid">
+      <nav>
+        <h3>二级菜单</h3>
+        <div id="toc"></div>
+      </nav>
+      <main><article id="content"></article></main>
+    </section>
+    <footer>东东制作</footer>
+  </div>
+  <button class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">回到顶部</button>
+
+  <script>
+    const toc = document.getElementById('toc');
+    const content = document.getElementById('content');
+
+    fetch('./content.md').then(r=>r.text()).then(md=>{
+      content.innerHTML = marked.parse(md);
+      const h3s=[...content.querySelectorAll('h3')];
+      h3s.forEach((h3,i)=>{
+        const id='s'+i; h3.id=id;
+        const a=document.createElement('a'); a.className='lv1'; a.href='#'+id; a.textContent=h3.textContent; toc.appendChild(a);
+        let el=h3.nextElementSibling; let idx=0;
+        while(el && el.tagName!=='H3'){
+          if(el.tagName==='H4'){
+            const sid=id+'-'+idx++; el.id=sid;
+            const b=document.createElement('a'); b.className='lv2'; b.href='#'+sid; b.textContent=el.textContent; toc.appendChild(b);
+          }
+          el=el.nextElementSibling;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
